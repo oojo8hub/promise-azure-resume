@@ -3,24 +3,62 @@ name: deploy-frontend
 on:
   push:
     branches:
-      - "main"
+      - main
     paths:
       - "frontend/**"
 
 jobs:
   deploy:
     runs-on: ubuntu-22.04
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Deploy to Azure Storage
-        uses: azure/storage-blob-upload-action@v1.0
-        with:
-          source: "./frontend/" # Path to your static website files
-          destination: "$web" # Target container for Static Website Hosting
-          account-name: ${{ secrets.AZURE_STORAGE_ACCOUNT_NAME }}
-          account-key: ${{ secrets.AZURE_STORAGE_ACCOUNT_KEY }}
+      - name: Set up Azure CLI
+        uses: azure/setup-azurecli@v1
+
+      - name: Log in to Azure using storage account key
+        run: |
+          az storage account keys list \
+            --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
+            --account-name ${{ secrets.AZURE_STORAGE_ACCOUNT_NAME }} \
+            --query '[0].value' \
+            -o tsv > storage_account_key.txt
+
+          export AZURE_STORAGE_ACCOUNT_KEY=$(cat storage_account_key.txt)
+
+      - name: Upload files to Azure Storage
+        run: |
+          az storage blob upload-batch \
+            --account-name ${{ secrets.AZURE_STORAGE_ACCOUNT_NAME }} \
+            --source './frontend/' \
+            --destination '$web' \
+            --account-key ${{ secrets.AZURE_STORAGE_ACCOUNT_KEY }}
+
+# name: deploy-frontend
+
+# on:
+#   push:
+#     branches:
+#       - "main"
+#     paths:
+#       - "frontend/**"
+
+# jobs:
+#   deploy:
+#     runs-on: ubuntu-22.04
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v3
+
+#       - name: Deploy to Azure Storage
+#         uses: azure/storage-blob-upload-action@v1.0
+#         with:
+#           source: "./frontend/" # Path to your static website files
+#           destination: "$web" # Target container for Static Website Hosting
+#           account-name: ${{ secrets.AZURE_STORAGE_ACCOUNT_NAME }}
+#           account-key: ${{ secrets.AZURE_STORAGE_ACCOUNT_KEY }}
 # name: deploy-frontend
 
 # on:
