@@ -1,0 +1,23 @@
+name: deploy-frontend
+
+on:
+  push:
+    branches:
+      - main
+      paths:
+        - 'frontend/**'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Deploy to Azure Storage
+        uses: azure/storage-blob-upload-action@v1.0
+        with:
+          source: './frontend/**' # Path to your static website files
+          destination: '$web' # Target container for Static Website Hosting
+          account-name: ${{ secrets.AZURE_STORAGE_ACCOUNT_NAME }}
+          account-key: ${{ secrets.AZURE_STORAGE_ACCOUNT_KEY }}
