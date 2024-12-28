@@ -16,7 +16,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Set up Azure CLI
-        uses: azure/setup-azurecli@v1
+        uses: azure/cli@v1
 
       - name: Log in to Azure using storage account key
         run: |
