@@ -1,0 +1,11 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "",
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet",
+    "AzureResumeConnectionString": "AccountEndpoint=https://promiseazureresume.documents.azure.com:443/;AccountKey=5GA4CZS5OdiN3idKWCuh3kCflfxJaTymAQYulhnKpJVNMo4QASocGsF0lyERkH1f056XK1OK91ZjACDb89FUjA==;"
+  },
+  "Host": {
+    "CORS": "*"
+  }
+}
